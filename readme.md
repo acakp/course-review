@@ -1,4 +1,5 @@
-activate venv in fish shell:
+## activate venv in fish shell:
+
 ```
   source venv/bin/activate.fish
 ```
@@ -16,3 +17,18 @@ password: `admin`
 postgresql db credentials:
 db name: `course_review`
 pwd: `blind`
+
+## Посмотреть последние 5 добавленных записей:
+
+1. Подключиться к django shell:
+```
+  python coursereview/manage.py shell
+```
+2. Импортировать нужную модель (например Course):
+```
+  from review_app.models import Course
+```
+3. Вывести последние 5 записей:
+```
+  Course.objects.order_by('-id')[:5]
+```
