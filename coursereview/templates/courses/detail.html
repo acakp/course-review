@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}{{ course.title }} — Отзывы о курсе{% endblock %}
+
+{% block content %}
+<h1 class="title">{{ course.title }}</h1>
+
+<p><strong>Платформа:</strong> {{ course.platform }}</p>
+<p><strong>Средняя оценка:</strong> {{ course.average_rating|default:"Нет оценки" }}</p>
+
+{% if course.description %}
+<div class="box">
+  <h3 class="title is-5">Описание курса</h3>
+  <p>{{ course.description }}</p>
+</div>
+{% endif %}
+
+<hr>
+
+<h3 class="title is-4">Оставить отзыв</h3>
+
+<form method="post">
+  {% csrf_token %}
+
+  <div class="columns">
+    <div class="column">
+      <div class="field">
+        <label class="label">{{ form.author.label }}</label>
+        <div class="control">
+          {{ form.author }}
+        </div>
+      </div>
+    </div>
+    <div class="column">
+      <div class="field">
+        <label class="label">{{ form.rating.label }}</label>
+        <div class="control">
+          {{ form.rating }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">{{ form.text.label }}</label>
+    <div class="control">
+      {{ form.text }}
+    </div>
+  </div>
+
+  <button class="button is-link" type="submit">Опубликовать</button>
+</form>
+
+<hr>
+
+<h3 class="title is-4">Отзывы</h3>
+
+<!-- {% if reviews %} -->
+<!-- <div class="columns is-multiline"> -->
+<!-- {% for review in reviews %} -->
+<!-- <div class="column is-half"> -->
+<!-- <div class="box"> -->
+<!-- <p><strong>👤 {{ review.author }}</strong></p> -->
+<!-- <p><strong>Оценка:</strong> {{ review.rating }}</p> -->
+<!-- <p>{{ review.text }}</p> -->
+<!-- </div> -->
+<!-- </div> -->
+<!-- {% endfor %} -->
+<!-- </div> -->
+<!-- {% else %} -->
+<!-- <p>Нет отзывов для этого курса.</p> -->
+<!-- {% endif %} -->
+{% if page_obj %}
+<div class="columns is-multiline">
+  {% for review in page_obj %}
+  <div class="column is-half">
+    <div class="box">
+      <p><strong>👤 {{ review.author }}</strong></p>
+      <p><strong>Оценка:</strong> {{ review.rating }}</p>
+      <p>{{ review.text }}</p>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% if page_obj.has_other_pages %}
+<nav class="pagination is-centered" role="navigation">
+  {% if page_obj.has_previous %}
+  <a class="pagination-previous" href="?page={{ page_obj.previous_page_number }}">Назад</a>
+  {% else %}
+  <span class="pagination-previous" disabled>Назад</span>
+  {% endif %}
+
+  {% if page_obj.has_next %}
+  <a class="pagination-next" href="?page={{ page_obj.next_page_number }}">Вперёд</a>
+  {% else %}
+  <span class="pagination-next" disabled>Вперёд</span>
+  {% endif %}
+
+  <ul class="pagination-list">
+    {% for page in page_obj.paginator.page_range %}
+    {% if page == page_obj.number %}
+    <li><span class="pagination-link is-current">{{ page }}</span></li>
+    {% else %}
+    <li><a class="pagination-link" href="?page={{ page }}">{{ page }}</a></li>
+    {% endif %}
+    {% endfor %}
+  </ul>
+</nav>
+{% endif %}
+
+{% endblock %}

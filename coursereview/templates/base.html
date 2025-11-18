@@ -1,0 +1,38 @@
+{% load static %}
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Отзывы о курсах</title>
+  <link rel="stylesheet" href="/static/bulma.css">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="{% url 'course_list' %}"><strong>Отзывы о курсах</strong></a>
+        <a class="navbar-item" href="{% url 'course_list' %}">Все курсы</a></strong>
+        <a class="navbar-item" href="{% url 'recommended_courses' %}">Рекомендуемые</a></strong>
+      </div>
+    </div>
+  </nav>
+
+  <main class="section">
+    <div class="container">
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  <footer class="footer has-text-centered">
+    <p>Удобный сервис для поиска и оценки различных учебных курсов</p>
+    <p>© 2025 Отзывы о курсах</p>
+  </footer>
+
+  {% block scripts %}{% endblock scripts %}
+</body>
+
+</html>
