@@ -1,8 +1,18 @@
-to start server:
+activate venv in fish shell:
 ```
-venv/bin/python coursereview/manage.py runserver
+  source venv/bin/activate.fish
 ```
 
+to start the server:
+```
+   python coursereview/manage.py runserver
+```
+or, if you want to run server without activation, you can explicitly specify python path: `venv/bin/python `instead of `python` 
+
 django admin panel credentials:
-user: bunny
-password: admin
+user: `bunny`
+password: `admin`
+
+postgresql db credentials:
+db name: `course_review`
+pwd: `blind`
