@@ -4,19 +4,11 @@
   source venv/bin/activate.fish
 ```
 
-to start the server:
+для запуска сервера:
 ```
    python coursereview/manage.py runserver
 ```
-or, if you want to run server without activation, you can explicitly specify python path: `venv/bin/python `instead of `python` 
-
-django admin panel credentials:
-user: `bunny`
-password: `admin`
-
-postgresql db credentials:
-db name: `course_review`
-pwd: `blind`
+или, если вы хотите запустить сервер без активации, вы можете явно указать путь к python: `venv/bin/python ` вместо `python`
 
 ## Посмотреть последние 5 добавленных записей:
 
