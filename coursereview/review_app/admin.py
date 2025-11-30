@@ -4,9 +4,9 @@ from .models import Course, Review
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ("title", "platform", "average_rating")
-    search_fields = ("title", "platform")
-    fields = ("title", "platform", "description")
+    list_display = ("title", "author", "average_rating")
+    search_fields = ("title", "author")
+    fields = ("title", "description")
 
 
 @admin.register(Review)

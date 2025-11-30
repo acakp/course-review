@@ -2,8 +2,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg
 from django.contrib import messages
 from django.core.paginator import Paginator
-from .models import Course
-from .forms import ReviewForm
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth.decorators import login_required
+from .models import Course, Author
+from .forms import ReviewForm, AuthorRegistrationForm, CourseForm
 
 
 def course_list(request):
@@ -48,3 +50,79 @@ def recommended_courses(request):
         avg_rating__gt=4.5
     )
     return render(request, "courses/recommended.html", {"courses": recommended})
+
+
+def register_author(request):
+    if request.method == "POST":
+        form = AuthorRegistrationForm(request.POST)
+        if form.is_valid():
+            author = form.save()
+            # автоматически логиним нового пользователя
+            user = author.user
+            auth_login(request, user)
+            messages.success(request, "Регистрация прошла успешно. Вы вошли в систему.")
+            return redirect("author_profile", author_id=author.id)
+    else:
+        form = AuthorRegistrationForm()
+    return render(request, "courses/register.html", {"form": form})
+
+
+def login_view(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            auth_login(request, user)
+            messages.success(request, "Вход выполнен.")
+            # если у пользователя есть профиль автора, редирект на его профиль, иначе на главную
+            author = getattr(user, "author_profile", None)
+            if author:
+                return redirect("author_profile", author_id=author.id)
+            return redirect("course_list")
+        else:
+            messages.error(request, "Неверные учётные данные.")
+    return render(request, "courses/login.html")
+
+
+def logout_view(request):
+    auth_logout(request)
+    messages.info(request, "Вы вышли из системы.")
+    return redirect("course_list")
+
+
+@login_required
+def add_course(request):
+    # убедимся что пользователь — автор
+    try:
+        author = request.user.author_profile
+    except Author.DoesNotExist:
+        messages.error(
+            request, "Только зарегистрированные авторы могут добавлять курсы."
+        )
+        return redirect("login")
+
+    if request.method == "POST":
+        form = CourseForm(request.POST)
+        if form.is_valid():
+            course = form.save(commit=False)
+            course.author = author
+            course.save()
+            messages.success(request, "Курс успешно добавлен.")
+            return redirect("course_detail", course_id=course.id)
+    else:
+        form = CourseForm()
+    return render(request, "courses/add_course.html", {"form": form})
+
+
+def author_profile(request, author_id):
+    author = get_object_or_404(Author, id=author_id)
+    courses = author.courses.all()
+    paginator = Paginator(courses, 10)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    return render(
+        request,
+        "courses/author_profile.html",
+        {"author": author, "courses": courses, "page_obj": page_obj},
+    )
