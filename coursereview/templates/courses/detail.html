@@ -4,7 +4,10 @@
 {% block content %}
 <h1 class="title">{{ course.title }}</h1>
 
-<p><strong>Платформа:</strong> {{ course.platform }}</p>
+<p><strong>Платформа:</strong>
+  <a href="{% url 'author_profile' course.author.id %}">
+    {{ course.author.display_name}}</a>
+</p>
 <p><strong>Средняя оценка:</strong> {{ course.average_rating|default:"Нет оценки" }}</p>
 
 {% if course.description %}
@@ -24,7 +27,7 @@
   <div class="columns">
     <div class="column">
       <div class="field">
-        <label class="label">{{ form.author.label }}</label>
+        <label class="label"></label>
         <div class="control">
           {{ form.author }}
         </div>

@@ -13,10 +13,11 @@
         <p class="title is-5">{{ course.title }}</p>
 
         {% if course.description %}
-        <p class="content">{{ course.description }}</p>
+        <p class="content desc">{{ course.description }}</p>
         {% endif %}
 
-        <p><strong>Платформа:</strong> {{ course.platform }}</p>
+        <p><strong>Автор:</strong> <a href="{% url 'author_profile' course.author.id %}">
+            {{ course.author.display_name }}</a></p>
         <p><strong>Средняя оценка:</strong> {{ course.average_rating|default:"Нет оценки" }}</p>
       </div>
 

@@ -1,3 +1,4 @@
+import re
 from django import forms
 from .models import Review
 from django.contrib.auth.models import User
@@ -57,14 +58,22 @@ class AuthorRegistrationForm(forms.ModelForm):
 
     def clean(self):
         cleaned = super().clean()
+        # проверка имени пользователя
+        u = cleaned.get("username")
+        if u and not re.match(r"^[A-Za-z0-9]+$", u):
+            raise forms.ValidationError(
+                "имя пользователя может содержать только латинские буквы и цифры."
+            )
+        if u and User.objects.filter(u=u).exists():
+            raise forms.ValidationError("пользователь с таким именем уже существует.")
+        # проверка паролей
         p = cleaned.get("password")
         pc = cleaned.get("password_confirm")
         if p and pc and p != pc:
-            raise forms.ValidationError("Passwords do not match")
+            raise forms.ValidationError("пароли не совпадают")
         return cleaned
 
     def save(self, commit=True):
-        # создаём User и Author
         cleaned = self.cleaned_data
         username = cleaned["username"]
         password = cleaned["password"]

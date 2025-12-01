@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Профиль {{ author.display_name }}{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="box">
+      <h1 class="title">{{ author.display_name }}</h1>
+      <p>{{ author.bio|linebreaks }}</p>
+      <p class="is-size-7">Зарегистрирован: {{ author.created_at|date:"Y-m-d" }}</p>
+      {% if request.user.is_authenticated and request.user == author.user %}
+      <a class="button is-primary" href="{% url 'add_course' %}">Добавить курс</a>
+      {% endif %}
+    </div>
+
+    <h2 class="subtitle">Курсы автора</h2>
+    <div class="columns is-multiline">
+      {% for course in page_obj.object_list %}
+      <div class="column is-one-third">
+        <div class="card">
+          <div class="card-content">
+            <p class="title is-5">{{ course.title }}</p>
+            <p class="subtitle is-6">{{ course.platform }}</p>
+            <div class="content">
+              {{ course.description|truncatechars:150 }}
+            </div>
+            <a class="button is-small is-link" href="{% url 'course_detail' course_id=course.id %}">Открыть</a>
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <p>У автора пока нет курсов.</p>
+      {% endfor %}
+    </div>
+
+    <nav class="pagination" role="navigation" aria-label="pagination">
+      {% if page_obj.has_previous %}
+      <a class="pagination-previous" href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+      {% endif %}
+      {% if page_obj.has_next %}
+      <a class="pagination-next" href="?page={{ page_obj.next_page_number }}">Следующая</a>
+      {% endif %}
+    </nav>
+
+  </div>
+</section>
+{% endblock %}

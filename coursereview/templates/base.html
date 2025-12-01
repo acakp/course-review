@@ -6,8 +6,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Отзывы о курсах</title>
-  <link rel="stylesheet" href="/static/bulma.css">
-  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+  <link rel="stylesheet" href="/static/css/bulma.css">
+  <link rel="stylesheet" href="/static/css/styles.css">
 </head>
 
 <body>
@@ -15,8 +16,8 @@
     <div class="navbar-menu">
       <div class="navbar-start">
         <a class="navbar-item" href="{% url 'course_list' %}"><strong>Отзывы о курсах</strong></a>
-        <a class="navbar-item" href="{% url 'course_list' %}">Все курсы</a></strong>
-        <a class="navbar-item" href="{% url 'recommended_courses' %}">Рекомендуемые</a></strong>
+        <a class="navbar-item" href="{% url 'course_list' %}">Все курсы</a>
+        <a class="navbar-item" href="{% url 'recommended_courses' %}">Рекомендуемые</a>
       </div>
     </div>
   </nav>
@@ -30,6 +31,7 @@
   <footer class="footer has-text-centered">
     <p>Удобный сервис для поиска и оценки различных учебных курсов</p>
     <p>© 2025 Отзывы о курсах</p>
+    <p><a href="{% url 'login' %}">Для владельцев курсов</a></p>
   </footer>
 
   {% block scripts %}{% endblock scripts %}
