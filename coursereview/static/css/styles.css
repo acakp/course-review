@@ -35,3 +35,11 @@ main {
 .navbar-end .button {
   margin-left: 10px;
 }
+
+.navbar-menu {
+  background: linear-gradient(90deg, #1336E9, #7133ff);
+}
+
+.navbar-burger span {
+  background-color: white !important;
+}

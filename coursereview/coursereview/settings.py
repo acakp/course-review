@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     "django_extensions",
     "allauth",
     "allauth.account",
-    # "review_app",
     "review_app.apps.ReviewAppConfig",
 ]
 
