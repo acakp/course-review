@@ -12,12 +12,48 @@
 </head>
 
 <body>
-  <nav class="navbar">
-    <div class="navbar-menu">
+  <nav class="navbar navbar-custom">
+
+    <div class="navbar-menu is-active">
+
       <div class="navbar-start">
         <a class="navbar-item" href="{% url 'course_list' %}"><strong>Отзывы о курсах</strong></a>
         <a class="navbar-item" href="{% url 'course_list' %}">Все курсы</a>
         <a class="navbar-item" href="{% url 'recommended_courses' %}">Рекомендуемые</a>
+      </div>
+
+      <div class="navbar-end">
+
+        {% if user.is_authenticated and user.author_profile %}
+        <div class="navbar-item">
+          <span class="tag is-dark is-medium">
+            👤 {{ user.username }}
+          </span>
+        </div>
+
+        <a class="navbar-item" href="{% url 'author_profile' user.author_profile.id %}">
+          Мой профиль
+        </a>
+
+        <form method="post" action="{% url 'account_logout' %}">
+          {% csrf_token %}
+          <button class="button is-warning is-light" type="submit">
+            Выйти
+          </button>
+        </form>
+
+        {% else %}
+
+        <a class="button is-success is-light" href="{% url 'account_login' %}">
+          Войти
+        </a>
+
+        <a class="button is-warning is-light" href="{% url 'account_signup' %}">
+          Регистрация
+        </a>
+
+        {% endif %}
+
       </div>
     </div>
   </nav>
@@ -31,7 +67,7 @@
   <footer class="footer has-text-centered">
     <p>Удобный сервис для поиска и оценки различных учебных курсов</p>
     <p>© 2025 Отзывы о курсах</p>
-    <p><a href="{% url 'login' %}">Для владельцев курсов</a></p>
+    <p><a href="{% url 'account_login' %}">Для владельцев курсов</a></p>
   </footer>
 
   {% block scripts %}{% endblock scripts %}

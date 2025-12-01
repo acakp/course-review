@@ -2,10 +2,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Avg
 from django.contrib import messages
 from django.core.paginator import Paginator
-from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from .models import Course, Author
-from .forms import ReviewForm, AuthorRegistrationForm, CourseForm
+from .forms import ReviewForm, CourseForm
 
 
 def course_list(request):
@@ -50,45 +49,6 @@ def recommended_courses(request):
         avg_rating__gt=4.5
     )
     return render(request, "courses/recommended.html", {"courses": recommended})
-
-
-def register_author(request):
-    if request.method == "POST":
-        form = AuthorRegistrationForm(request.POST)
-        if form.is_valid():
-            author = form.save()
-            # автоматически логиним нового пользователя
-            user = author.user
-            auth_login(request, user)
-            messages.success(request, "Регистрация прошла успешно. Вы вошли в систему.")
-            return redirect("author_profile", author_id=author.id)
-    else:
-        form = AuthorRegistrationForm()
-    return render(request, "courses/register.html", {"form": form})
-
-
-def login_view(request):
-    if request.method == "POST":
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            auth_login(request, user)
-            messages.success(request, "Вход выполнен.")
-            # если у пользователя есть профиль автора, редирект на его профиль, иначе на главную
-            author = getattr(user, "author_profile", None)
-            if author:
-                return redirect("author_profile", author_id=author.id)
-            return redirect("course_list")
-        else:
-            messages.error(request, "Неверные учётные данные.")
-    return render(request, "courses/login.html")
-
-
-def logout_view(request):
-    auth_logout(request)
-    messages.info(request, "Вы вышли из системы.")
-    return redirect("course_list")
 
 
 @login_required

@@ -1,10 +1,7 @@
-import re
 from django import forms
 from .models import Review
-from django.contrib.auth.models import User
-
-# from django.contrib.auth.forms import AuthenticationForm
-from .models import Author, Course
+from allauth.account.forms import SignupForm
+from .models import Course
 
 
 class ReviewForm(forms.ModelForm):
@@ -44,48 +41,22 @@ class ReviewForm(forms.ModelForm):
         return rating
 
 
-class AuthorRegistrationForm(forms.ModelForm):
-    username = forms.CharField(max_length=150, required=True)
-    password = forms.CharField(widget=forms.PasswordInput, required=True)
-    password_confirm = forms.CharField(
-        widget=forms.PasswordInput, required=True, label="Confirm password"
+class CustomSignupForm(SignupForm):
+    display_name = forms.CharField(
+        max_length=200, label="Отображаемое имя", required=True
     )
-    email = forms.EmailField(required=False)
+    bio = forms.CharField(widget=forms.Textarea, label="О себе", required=False)
 
-    class Meta:
-        model = Author
-        fields = ["display_name", "bio"]
+    def save(self, request):
+        # сохраняем стандартного пользователя
+        user = super().save(request)
 
-    def clean(self):
-        cleaned = super().clean()
-        # проверка имени пользователя
-        u = cleaned.get("username")
-        if u and not re.match(r"^[A-Za-z0-9]+$", u):
-            raise forms.ValidationError(
-                "имя пользователя может содержать только латинские буквы и цифры."
-            )
-        if u and User.objects.filter(u=u).exists():
-            raise forms.ValidationError("пользователь с таким именем уже существует.")
-        # проверка паролей
-        p = cleaned.get("password")
-        pc = cleaned.get("password_confirm")
-        if p and pc and p != pc:
-            raise forms.ValidationError("пароли не совпадают")
-        return cleaned
+        # создаём профиль автора
+        user.author_profile.display_name = self.cleaned_data["display_name"]
+        user.author_profile.bio = self.cleaned_data["bio"]
+        user.author_profile.save()
 
-    def save(self, commit=True):
-        cleaned = self.cleaned_data
-        username = cleaned["username"]
-        password = cleaned["password"]
-        email = cleaned.get("email") or ""
-        user = User.objects.create_user(
-            username=username, password=password, email=email
-        )
-        author = super().save(commit=False)
-        author.user = user
-        if commit:
-            author.save()
-        return author
+        return user
 
 
 class CourseForm(forms.ModelForm):

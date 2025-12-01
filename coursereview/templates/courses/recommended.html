@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Рекомендуемые курсы — Отзывы о курсах{% endblock %}
+{% block title %}Рекомендуемые курсы - Отзывы о курсах{% endblock %}
 
 {% block content %}
 <nav class="mb-4">
@@ -14,12 +14,17 @@
   <div class="column is-one-third">
     <div class="card">
       <div class="card-content">
-        <p class="title is-5">
-          {{ course.title }}
-        </p>
-        <p><strong>Платформа:</strong> {{ course.platform }}</p>
-        <p><strong>Средняя оценка:</strong> {{ course.average_rating }}</p>
+        <p class="title is-5">{{ course.title }}</p>
+
+        {% if course.description %}
+        <p class="content desc">{{ course.description }}</p>
+        {% endif %}
+
+        <p><strong>Автор:</strong> <a href="{% url 'author_profile' course.author.id %}">
+            {{ course.author.display_name }}</a></p>
+        <p><strong>Средняя оценка:</strong> {{ course.average_rating|default:"Нет оценки" }}</p>
       </div>
+
       <footer class="card-footer">
         <a class="card-footer-item" href="{% url 'course_detail' course.id %}">
           Подробнее
@@ -28,6 +33,33 @@
     </div>
   </div>
   {% endfor %}
+  <!-- пагинация -->
+  {% if page_obj.has_other_pages %}
+  <nav class="pagination is-centered" role="navigation">
+    {% if page_obj.has_previous %}
+    <a class="pagination-previous" href="?page={{ page_obj.previous_page_number }}">Назад</a>
+    {% else %}
+    <span class="pagination-previous" disabled>Назад</span>
+    {% endif %}
+
+    {% if page_obj.has_next %}
+    <a class="pagination-next" href="?page={{ page_obj.next_page_number }}">Вперёд</a>
+    {% else %}
+    <span class="pagination-next" disabled>Вперёд</span>
+    {% endif %}
+
+    <ul class="pagination-list">
+      {% for page in page_obj.paginator.page_range %}
+      {% if page == page_obj.number %}
+      <li><span class="pagination-link is-current">{{ page }}</span></li>
+      {% else %}
+      <li><a class="pagination-link" href="?page={{ page }}">{{ page }}</a></li>
+      {% endif %}
+      {% endfor %}
+    </ul>
+  </nav>
+  {% endif %}
+
 </div>
 {% else %}
 <p>Рекомендаций пока нет.</p>

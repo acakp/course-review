@@ -1,0 +1,14 @@
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.contrib.auth.models import User
+from .models import Author
+
+
+@receiver(post_save, sender=User)
+def create_author_profile(sender, instance, created, **kwargs):
+    # создать профиль автора при регистрации
+    if created:
+        Author.objects.create(
+            user=instance,
+            display_name=instance.username,
+        )

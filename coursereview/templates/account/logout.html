@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Выход{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <div class="box" style="max-width: 450px; margin: 0 auto;">
+      <h1 class="title has-text-centered">Выход из аккаунта</h1>
+      <p class="has-text-centered mb-4">
+        Вы действительно хотите выйти?
+      </p>
+
+      <form method="post" action="{% url 'account_logout' %}">
+        {% csrf_token %}
+        <div class="field is-grouped is-grouped-centered">
+          <p class="control">
+            <button class="button is-danger" type="submit">
+              Выйти
+            </button>
+          </p>
+          <p class="control">
+            <a href="/" class="button is-light">
+              Отмена
+            </a>
+          </p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}
