@@ -1,3 +1,33 @@
+# Установка
+
+1. Установите Python 3.10+
+2. Создайте виртуальное окружение:
+```
+python -m venv venv
+source venv/bin/activate
+```
+3. Установите зависимости:
+```
+pip install -r requirements.txt
+```
+4. Установите PostgreSQL и создайте там БД, которую будете использовать
+5. Создайте .env файл с необходимыми данными для входа (пример в .env.dist)
+6. Миграции:
+```
+python manage.py migrate
+```
+7. Запуск:
+```
+python manage.py runserver
+```
+
+**Готово — сайт доступен на:**
+```
+http://127.0.0.1:8000
+```
+
+
+
 ## activate venv in fish shell:
 
 ```
